@@ -1,6 +1,8 @@
 const express = require("express");
 const app = express();
 
+app.use(express.json());
+
 let persons = [
   {
     name: "Ada Lovelace",
@@ -23,6 +25,9 @@ let persons = [
     id: 5,
   },
 ];
+
+const newID = () => Math.max(...persons.map((persons) => persons.id)) + 1;
+
 app.get("/", (request, response) => {
   response.send("<h1>Hello</h1>");
 });
@@ -54,6 +59,20 @@ app.delete("/api/persons/:id", (request, response) => {
   persons = persons.filter((person) => person.id !== id);
   console.log(persons);
   response.status(204).end();
+});
+
+app.post("/api/persons", (request, response) => {
+  const person = request.body;
+  if (person.name && person.number) {
+    console.log([person.name, person.number]);
+    persons.push({
+      name: person.name,
+      number: person.number,
+      id: newID(),
+    });
+  } else {
+    response.status(400).end();
+  }
 });
 
 const PORT = 3001;
