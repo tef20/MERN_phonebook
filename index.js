@@ -63,11 +63,13 @@ app.delete("/api/persons/:id", (request, response) => {
 
 app.post("/api/persons", (request, response) => {
   const person = request.body;
-  if (
-    person.name &&
-    person.number &&
-    !persons.some((p) => p.name === person.name)
-  ) {
+  if (!person.name || !person.number) {
+    response.status(400);
+    response.json({ error: "Contact must include a name and number." });
+  } else if (persons.some((existingP) => existingP.name === person.name)) {
+    response.status(400);
+    response.json({ error: "Contact already exists." });
+  } else {
     console.log([person.name, person.number]);
     persons = persons.concat({
       name: person.name,
@@ -75,8 +77,6 @@ app.post("/api/persons", (request, response) => {
       id: newID(),
     });
     response.json();
-  } else {
-    response.status(400).end();
   }
 });
 
