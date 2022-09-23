@@ -3,7 +3,14 @@ const morgan = require("morgan");
 const app = express();
 
 app.use(express.json());
-app.use(morgan("tiny"));
+morgan.token("customCont", (req, res) => {
+  return JSON.stringify(req.body);
+});
+app.use(
+  morgan(
+    `:method :url :status :res[content] - :response-time ms Contents: :customCont`
+  )
+);
 
 let persons = [
   {
@@ -71,7 +78,6 @@ app.post("/api/persons", (request, response) => {
     response.status(400);
     response.json({ error: "Contact already exists." });
   } else {
-    console.log([person.name, person.number]);
     persons = persons.concat({
       name: person.name,
       number: person.number,
