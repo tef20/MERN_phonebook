@@ -63,13 +63,18 @@ app.delete("/api/persons/:id", (request, response) => {
 
 app.post("/api/persons", (request, response) => {
   const person = request.body;
-  if (person.name && person.number) {
+  if (
+    person.name &&
+    person.number &&
+    !persons.some((p) => p.name === person.name)
+  ) {
     console.log([person.name, person.number]);
-    persons.push({
+    persons = persons.concat({
       name: person.name,
       number: person.number,
       id: newID(),
     });
+    response.json();
   } else {
     response.status(400).end();
   }

@@ -15,4 +15,16 @@ Content-Type: application/json
     "number": "12345"
 }
 
+###
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+    "name": "Cathy Jenkins"
+    # contact missing number, should not be accepted.
+}
+
+
+
+
 
