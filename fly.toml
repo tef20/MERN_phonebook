@@ -1,6 +1,6 @@
-# fly.toml file generated for phonebookfullstackopen on 2022-09-26T21:18:23-07:00
+# fly.toml file generated for icy-sound-7455 on 2022-09-26T22:06:19-07:00
 
-app = "phonebookfullstackopen"
+app = "icy-sound-7455"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []

@@ -2,6 +2,7 @@ const express = require("express");
 const morgan = require("morgan");
 const app = express();
 
+app.use(express.static("build"));
 app.use(express.json());
 morgan.token("customCont", (req, res) => {
   return JSON.stringify(req.body);
@@ -37,9 +38,9 @@ let persons = [
 
 const newID = () => Math.max(...persons.map((persons) => persons.id)) + 1;
 
-app.get("/", (request, response) => {
-  response.send("<h1>Hello</h1>");
-});
+// app.get("/", (request, response) => {
+//   response.send("<h1>Hello</h1>");
+// });
 
 app.get("/info", (request, response) => {
   response.send(
