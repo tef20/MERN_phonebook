@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-if (process.argv.length < 5) {
+if (process.argv.length < 3) {
   console.log(
     "Please provide the password as an argument: node mongo.js <password>"
   );
@@ -8,8 +8,6 @@ if (process.argv.length < 5) {
 }
 
 const password = process.argv[2];
-const contactName = process.argv[3];
-const contactNumber = process.argv[4];
 
 const url = `mongodb+srv://m001-student:${password}@sandbox.rubk0.mongodb.net/phoonebook?retryWrites=true&w=majority`;
 
@@ -20,20 +18,37 @@ const personSchema = new mongoose.Schema({
 
 const Person = mongoose.model("Person", personSchema);
 
-mongoose
-  .connect(url)
-  .then((result) => {
-    console.log("connected");
+const contactName = process.argv[3] ?? null;
+const contactNumber = process.argv[4] ?? null;
 
-    const person = new Person({
-      name: contactName,
-      number: contactNumber,
-    });
+const phonebook = mongoose.connect(url).then(() => console.log("connected"));
 
-    return person.save();
-  })
-  .then(() => {
-    console.log(`added ${contactName} number ${contactNumber} to phonebook`);
-    return mongoose.connection.close();
-  })
-  .catch((err) => console.log(err));
+if (process.argv.length < 5) {
+  phonebook
+    .then(() => {
+      console.log("phonebook:");
+      Person.find({}).then((result) => {
+        result.forEach((person) => {
+          console.log(`${person.name} ${person.number}`);
+        });
+
+        return mongoose.connection.close();
+      });
+    })
+    .catch((err) => console.log(err));
+} else {
+  phonebook
+    .then((result) => {
+      const person = new Person({
+        name: contactName,
+        number: contactNumber,
+      });
+
+      return person.save();
+    })
+    .then((messageArray) => {
+      console.log(`added ${contactName} number ${contactNumber} to phonebook`);
+      return mongoose.connection.close();
+    })
+    .catch((err) => console.log(err));
+}
