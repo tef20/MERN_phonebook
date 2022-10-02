@@ -1,9 +1,6 @@
 const mongoose = require("mongoose");
 
-// schema
-// collection?
-// instantiation?
-if (process.argv.length < 3) {
+if (process.argv.length < 5) {
   console.log(
     "Please provide the password as an argument: node mongo.js <password>"
   );
@@ -27,8 +24,8 @@ mongoose
     console.log("connected");
 
     const person = new Person({
-      name: "John Smith",
-      number: "01234",
+      name: process.argv[3],
+      number: process.argv[4],
     });
 
     return person.save();
