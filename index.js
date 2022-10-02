@@ -38,10 +38,6 @@ let persons = [
 
 const newID = () => Math.max(...persons.map((persons) => persons.id)) + 1;
 
-// app.get("/", (request, response) => {
-//   response.send("<h1>Hello</h1>");
-// });
-
 app.get("/info", (request, response) => {
   response.send(
     `<p>Phonebook has info for ${
@@ -79,12 +75,13 @@ app.post("/api/persons", (request, response) => {
     response.status(400);
     response.json({ error: "Contact already exists." });
   } else {
-    persons = persons.concat({
+    const newContact = {
       name: person.name,
       number: person.number,
       id: newID(),
-    });
-    response.json();
+    };
+    persons = persons.concat(newContact);
+    response.json(newContact);
   }
 });
 
