@@ -1,6 +1,8 @@
+require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
 const app = express();
+const Person = require("./models/person");
 
 app.use(express.static("build"));
 app.use(express.json());
@@ -13,28 +15,28 @@ app.use(
   )
 );
 
-let persons = [
-  {
-    name: "Ada Lovelace",
-    number: "39-44-5323523",
-    id: 2,
-  },
-  {
-    name: "Dan Abramov",
-    number: "12121",
-    id: 3,
-  },
-  {
-    name: "Mary Poppendieck",
-    number: "39-23-6423122",
-    id: 4,
-  },
-  {
-    name: "aa",
-    number: "bb",
-    id: 5,
-  },
-];
+// let persons = [
+//   {
+//     name: "Ada Lovelace",
+//     number: "39-44-5323523",
+//     id: 2,
+//   },
+//   {
+//     name: "Dan Abramov",
+//     number: "12121",
+//     id: 3,
+//   },
+//   {
+//     name: "Mary Poppendieck",
+//     number: "39-23-6423122",
+//     id: 4,
+//   },
+//   {
+//     name: "aa",
+//     number: "bb",
+//     id: 5,
+//   },
+// ];
 
 const newID = () => Math.max(...persons.map((persons) => persons.id)) + 1;
 
@@ -69,23 +71,27 @@ app.delete("/api/persons/:id", (request, response) => {
 app.post("/api/persons", (request, response) => {
   const person = request.body;
   if (!person.name || !person.number) {
-    response.status(400);
-    response.json({ error: "Contact must include a name and number." });
-  } else if (persons.some((existingP) => existingP.name === person.name)) {
-    response.status(400);
-    response.json({ error: "Contact already exists." });
-  } else {
-    const newContact = {
-      name: person.name,
-      number: person.number,
-      id: newID(),
-    };
-    persons = persons.concat(newContact);
-    response.json(newContact);
+    return response
+      .status(400)
+      .json({ error: "Contact must include a name and number." });
   }
+
+  if (persons.some((existingP) => existingP.name === person.name)) {
+    return response.status(400).json({ error: "Contact already exists." });
+  }
+
+  const newContact = new Person({
+    name: person.name,
+    number: person.number,
+    // id: newID(),
+  });
+
+  newContact.save().then((savedContact) => {
+    response.json(savedContact);
+  });
 });
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Listening on port: ${PORT}`);
 });
