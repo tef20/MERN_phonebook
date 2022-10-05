@@ -1,6 +1,6 @@
-# fly.toml file generated for divine-dust-3869 on 2022-09-29T23:58:10-07:00
+# fly.toml file generated for polished-dream-790 on 2022-10-04T18:48:03-07:00
 
-app = "divine-dust-3869"
+app = "polished-dream-790"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []

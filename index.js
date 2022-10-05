@@ -15,7 +15,7 @@ app.use(
   )
 );
 
-// let persons = [
+// let initialPersons = [
 //   {
 //     name: "Ada Lovelace",
 //     number: "39-44-5323523",
@@ -38,33 +38,33 @@ app.use(
 //   },
 // ];
 
-const newID = () => Math.max(...persons.map((persons) => persons.id)) + 1;
+// const newID = () => Math.max(...initialPersons.map((p) => p.id)) + 1;
 
 app.get("/info", (request, response) => {
-  response.send(
+  return response.send(
     `<p>Phonebook has info for ${
-      persons.length
+      initialPersons.length
     } people.</p><p>${new Date()}</p>`
   );
 });
 
 app.get("/api/persons", (request, response) => {
-  response.send(persons);
+  return Person.find({}).then((res) => {
+    response.send(res);
+  });
 });
 
 app.get("/api/persons/:id", (request, response) => {
   const id = +request.params.id;
-  const person = persons.find((person) => person.id === id);
-  if (!person) {
-    response.status(404).end();
-  } else {
-    response.json(person);
-  }
+  Person.findById(id).then((person) => {
+    if (!person) return response.status(404).end();
+    return response.json(person);
+  });
 });
 
 app.delete("/api/persons/:id", (request, response) => {
   const id = +request.params.id;
-  persons = persons.filter((person) => person.id !== id);
+  initialPersons = initialPersons.filter((person) => person.id !== id);
   response.status(204).end();
 });
 
@@ -76,9 +76,9 @@ app.post("/api/persons", (request, response) => {
       .json({ error: "Contact must include a name and number." });
   }
 
-  if (persons.some((existingP) => existingP.name === person.name)) {
-    return response.status(400).json({ error: "Contact already exists." });
-  }
+  // if (initialPersons.some((existingP) => existingP.name === person.name)) {
+  //   return response.status(400).json({ error: "Contact already exists." });
+  // }
 
   const newContact = new Person({
     name: person.name,
@@ -87,7 +87,7 @@ app.post("/api/persons", (request, response) => {
   });
 
   newContact.save().then((savedContact) => {
-    response.json(savedContact);
+    return response.json(savedContact);
   });
 });
 

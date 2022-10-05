@@ -9,7 +9,7 @@ if (process.argv.length < 3) {
 
 const password = process.argv[2];
 
-const url = `mongodb+srv://m001-student:${password}@sandbox.rubk0.mongodb.net/phoonebook?retryWrites=true&w=majority`;
+const url = `mongodb+srv://m001-student:${password}@sandbox.rubk0.mongodb.net/phonebook?retryWrites=true&w=majority`;
 
 const personSchema = new mongoose.Schema({
   name: String,
