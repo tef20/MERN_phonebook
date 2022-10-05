@@ -15,31 +15,6 @@ app.use(
   )
 );
 
-// let initialPersons = [
-//   {
-//     name: "Ada Lovelace",
-//     number: "39-44-5323523",
-//     id: 2,
-//   },
-//   {
-//     name: "Dan Abramov",
-//     number: "12121",
-//     id: 3,
-//   },
-//   {
-//     name: "Mary Poppendieck",
-//     number: "39-23-6423122",
-//     id: 4,
-//   },
-//   {
-//     name: "aa",
-//     number: "bb",
-//     id: 5,
-//   },
-// ];
-
-// const newID = () => Math.max(...initialPersons.map((p) => p.id)) + 1;
-
 app.get("/info", (request, response) => {
   return response.send(
     `<p>Phonebook has info for ${
@@ -64,8 +39,11 @@ app.get("/api/persons/:id", (request, response) => {
 
 app.delete("/api/persons/:id", (request, response) => {
   const id = +request.params.id;
-  initialPersons = initialPersons.filter((person) => person.id !== id);
-  response.status(204).end();
+  Person.findByIdAndRemove(id)
+    .then((result) => {
+      response.status(204).end();
+    })
+    .catch((error) => console.log("ERROR HERE", error));
 });
 
 app.post("/api/persons", (request, response) => {
