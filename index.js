@@ -30,20 +30,20 @@ app.get("/api/persons", (request, response) => {
 });
 
 app.get("/api/persons/:id", (request, response) => {
-  const id = +request.params.id;
+  const id = request.params.id;
   Person.findById(id).then((person) => {
     if (!person) return response.status(404).end();
     return response.json(person);
   });
 });
 
-app.delete("/api/persons/:id", (request, response) => {
-  const id = +request.params.id;
+app.delete("/api/persons/:id", (request, response, next) => {
+  const id = request.params.id;
   Person.findByIdAndRemove(id)
     .then((result) => {
       response.status(204).end();
     })
-    .catch((error) => console.log("ERROR HERE", error));
+    .catch((error) => next(error));
 });
 
 app.post("/api/persons", (request, response) => {

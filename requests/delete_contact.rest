@@ -1,2 +1,2 @@
 # DELETE http://localhost:3001/api/persons/6
-DELETE https://divine-dust-3869.fly.dev/api/persons/6
+DELETE https://polished-dream-790.fly.dev/api/persons/634119fba489bfcf54b9ef19
