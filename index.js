@@ -29,7 +29,7 @@ app.get("/api/persons", (request, response) => {
   });
 });
 
-app.get("/api/persons/:id", (request, response) => {
+app.get("/api/persons/:id", (request, response, next) => {
   const id = request.params.id;
   Person.findById(id)
     .then((person) => {
@@ -41,11 +41,13 @@ app.get("/api/persons/:id", (request, response) => {
 
 app.delete("/api/persons/:id", (request, response, next) => {
   const id = request.params.id;
-  Person.findByIdAndRemove(+id)
-    .then((result) => {
-      response.status(204).end();
-    })
-    .catch((error) => next(error));
+  console.log(
+    Person.findByIdAndRemove(id)
+      .then((result) => {
+        response.status(204).end();
+      })
+      .catch((error) => next(error))
+  );
 });
 
 app.post("/api/persons", (request, response) => {
@@ -56,19 +58,29 @@ app.post("/api/persons", (request, response) => {
       .json({ error: "Contact must include a name and number." });
   }
 
-  // if (initialPersons.some((existingP) => existingP.name === person.name)) {
-  //   return response.status(400).json({ error: "Contact already exists." });
-  // }
-
   const newContact = new Person({
     name: person.name,
     number: person.number,
-    // id: newID(),
   });
 
   newContact.save().then((savedContact) => {
     return response.json(savedContact);
   });
+});
+
+app.put("/api/persons/:id", (request, response, next) => {
+  const id = request.params.id;
+  const person = request.body;
+
+  return Person.findOneAndUpdate(
+    { _id: id },
+    { name: person.name, number: person.number },
+    { new: true }
+  )
+    .then((result) => {
+      response.status(200).send(result);
+    })
+    .catch((error) => next(error));
 });
 
 const errorHandler = (error, request, response, next) => {
