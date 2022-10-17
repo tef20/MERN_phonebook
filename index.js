@@ -16,11 +16,11 @@ app.use(
 );
 
 app.get("/info", (request, response) => {
-  return response.send(
-    `<p>Phonebook has info for ${
-      initialPersons.length
-    } people.</p><p>${new Date()}</p>`
-  );
+  return Person.countDocuments().then((count) => {
+    response.send(
+      `<p>Phonebook has info for ${count} people.</p><p>${new Date()}</p>`
+    );
+  });
 });
 
 app.get("/api/persons", (request, response) => {
